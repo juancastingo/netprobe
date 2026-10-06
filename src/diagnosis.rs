@@ -49,7 +49,7 @@ pub fn analyze_failure(failed_stage: &str, error_message: &str) -> DiagnosisRepo
             }
         }
         "TCP" => {
-            if err_lower.contains("connection refused") {
+            if err_lower.contains("refused") {
                 DiagnosisReport {
                     failed_stage: "TCP Connection".to_string(),
                     summary: "The target host actively rejected the connection (RST packet received).".to_string(),
