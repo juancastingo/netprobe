@@ -10,6 +10,7 @@ jobs:
     name: Build (${{ matrix.target }})
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: ubuntu-latest
@@ -46,6 +47,8 @@ jobs:
           sudo apt-get install -y gcc-aarch64-linux-gnu
 
       - name: Build Binary
+        env:
+          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
         run: cargo build --release --target ${{ matrix.target }}
 
       - name: Package (Unix)
@@ -67,6 +70,7 @@ jobs:
   publish-release:
     name: Create GitHub Release
     needs: build-release
+    if: always() && needs.build-release.result != 'cancelled'
     runs-on: ubuntu-latest
     permissions:
       contents: write
